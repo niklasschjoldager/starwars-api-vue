@@ -9,6 +9,9 @@ export default {
         secondary: '#ad7d37',
         tertiary: '#2e557c',
         quaternary: '#381010'
+      },
+      fontFamily: {
+        display: 'Star Jedi, ui-serif' // Adds a new `font-display` class
       }
     }
   },
