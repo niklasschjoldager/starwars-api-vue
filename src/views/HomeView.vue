@@ -1,25 +1,53 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useFetch } from '../composables/fetch.js'
 
-const data = ref(null)
-const error = ref(null)
+const { data, error } = useFetch('https://swapi.dev/api/people')
 
-fetch('https://swapi.dev/api/people')
-  .then((res) => res.json())
-  .then((json) => (data.value = json))
-  .catch((err) => (error.value = err))
+const gender = ref(null)
+const options = ref([
+  {
+    text: 'All',
+    value: null
+  },
+  {
+    text: 'Male',
+    value: 'male'
+  },
+  {
+    text: 'Female',
+    value: 'female'
+  }
+])
 </script>
 
 <template>
-  <h1>This is a home page</h1>
-  <div v-if="error">Oops, an error occured: {{ error.message }}</div>
-  <div v-else-if="!data">Loading...</div>
-  <div v-else>
-    <div v-for="({ name, height }, index) in data.results" :key="index">
-      <article class="">
-        <h2>{{ name }}</h2>
-        <p>{{ height }}</p>
-      </article>
-    </div>
+  <div class="container mx-auto px-4 py-8">
+    <main>
+      <h1 class="text-2xl mb-4">People</h1>
+      <div v-if="error">Oops, an error occured: {{ error.message }}</div>
+      <div v-else-if="!data">Loading...</div>
+      <section v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+        <article
+          v-for="({ name, height, mass }, index) in gender
+            ? data.results.filter((person) => person.gender === gender)
+            : data.results"
+          :key="index"
+          class="bg-secondary rounded-md p-4"
+        >
+          <h2>{{ name }}</h2>
+          <p>Height: {{ height }} cm</p>
+          <p>Mass: {{ mass }} kg</p>
+        </article>
+      </section>
+    </main>
+    <aside>
+      <h2 class="text-xl">Filters</h2>
+      <select v-model="gender">
+        <option v-for="{ text, value } in options" :value="value" :key="value">
+          {{ text }}
+        </option>
+      </select>
+    </aside>
   </div>
 </template>
