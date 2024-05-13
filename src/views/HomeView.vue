@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useFetch } from '../composables/fetch.js'
+import PersonItem from '../components/PersonItem.vue'
 
 const { data, error } = useFetch('https://swapi.dev/api/people')
 
@@ -28,17 +29,15 @@ const options = ref([
       <div v-if="error">Oops, an error occured: {{ error.message }}</div>
       <div v-else-if="!data">Loading...</div>
       <section v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-        <article
-          v-for="({ name, height, mass }, index) in gender
+        <PersonItem
+          v-for="{ name, height, mass } in gender
             ? data.results.filter((person) => person.gender === gender)
             : data.results"
-          :key="index"
-          class="bg-secondary rounded-md p-4"
-        >
-          <h2>{{ name }}</h2>
-          <p>Height: {{ height }} cm</p>
-          <p>Mass: {{ mass }} kg</p>
-        </article>
+          :name="name"
+          :height="height"
+          :mass="mass"
+          :key="name"
+        />
       </section>
     </main>
     <aside>
