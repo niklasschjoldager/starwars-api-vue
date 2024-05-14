@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useFetch } from '../composables/fetch.js'
-import PersonItem from '../components/PersonItem.vue'
+import CharacterItem from '../components/CharacterItem.vue'
 
 const { data, error, isLoading } = useFetch('https://swapi.dev/api/people')
 
@@ -10,7 +10,7 @@ const birthYear = ref(false)
 const gender = ref(null)
 const genderOptions = ref([
   {
-    text: 'All',
+    text: 'Show all',
     value: null
   },
   {
@@ -78,32 +78,59 @@ const filteredCharacters = computed(() => {
 </script>
 
 <template>
-  <!-- TODO: Make FilterList / Filters & PersonList component -->
-  <div class="container mx-auto px-4 py-8 sm:grid lg:flex lg:gap-4">
-    <main class="lg:w-4/5">
-      <h1 class="text-2xl mb-4 font-display">Characters</h1>
-      <div v-if="error">Oops, an error occured: {{ error.message }}</div>
-      <div v-else-if="isLoading">Loading...</div>
-      <section v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-        <PersonItem
-          v-for="{ name, height, mass, birth_year } in filteredCharacters"
-          :name="name"
-          :height="height"
-          :mass="mass"
-          :birthYear="birth_year"
-          :key="name"
-        />
-      </section>
+  <!-- TODO: Make FilterList / Filters & CharcterList component -->
+  <div class="container mx-auto px-4 py-8">
+    <main>
+      <h1 class="flex flex-col mb-16 text-center">
+        <span class="text-8xl font-display ml-4 flex flex-col mb-8 text-primary">
+          <span>Star</span>
+          <span>Wars</span>
+        </span>
+        <span class="text-5xl">Database</span>
+        <span class="text-lg">Everything about Star Wars!</span>
+      </h1>
+      <div class="lg:flex lg:gap-12 relative">
+        <section class="lg:w-9/12 py-4">
+          <h2 class="text-4xl mb-4 font-display">Characters</h2>
+          <div v-if="error">Oops, an error occured: {{ error.message }}</div>
+          <div v-else-if="isLoading">Loading...</div>
+          <ul v-else class="grid gap-4 sm:grid-cols-2 2xl:grid-cols-3">
+            <CharacterItem
+              v-for="{ name, height, mass, birth_year, films, hair_color } in filteredCharacters"
+              :name="name"
+              :height="height"
+              :mass="mass"
+              :birthYear="birth_year"
+              :filmsQuantity="films.length"
+              :hairColor="hair_color"
+              :key="name"
+            />
+          </ul>
+        </section>
+        <aside class="lg:w-3/12 py-4">
+          <h2 class="ml-1 text-4xl mb-4 font-display">Filters</h2>
+          <div class="flex flex-col">
+            <h3 class="mb-1">Gender</h3>
+            <select
+              v-model="gender"
+              class="p-2 bg-transparent border border-primary rounded-md cursor-pointer"
+            >
+              <option v-for="{ text, value } in genderOptions" :value="value" :key="value">
+                {{ text }}
+              </option>
+            </select>
+            <hr class="border border-slate-100 my-4" />
+            <h3 class="mb-1">Birth year</h3>
+            <label
+              for="birthYear"
+              class="flex gap-2 text-sm border border-primary p-2 rounded-md cursor-pointer"
+            >
+              <input v-model="birthYear" id="birthYear" type="checkbox" />
+              <span>Between 20 and 40 BBY</span>
+            </label>
+          </div>
+        </aside>
+      </div>
     </main>
-    <aside class="lg:w-1/5">
-      <h2 class="text-xl mb-4">Filters</h2>
-      <select v-model="gender">
-        <option v-for="{ text, value } in genderOptions" :value="value" :key="value">
-          {{ text }}
-        </option>
-      </select>
-      <label for="birthYear">Show characters with birthyear between 20 and 40 BBY</label>
-      <input v-model="birthYear" id="birthYear" type="checkbox" />
-    </aside>
   </div>
 </template>

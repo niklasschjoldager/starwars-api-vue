@@ -5,10 +5,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#334e30',
-        secondary: '#ad7d37',
-        tertiary: '#2e557c',
-        quaternary: '#381010'
+        primary: '#ffe81f',
+        secondary: '#394A59'
       },
       fontFamily: {
         display: 'Star Jedi, ui-serif' // Adds a new `font-display` class
